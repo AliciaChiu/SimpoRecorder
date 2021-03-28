@@ -8,11 +8,28 @@
 import UIKit
 
 
+protocol CustomTableViewCellDelegate {
+    func popEditingAlert(indexPath: IndexPath)
+}
+
 
 class CustomTableViewCell: UITableViewCell{
 
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
+    
+    var delegate: CustomTableViewCellDelegate?
+    
+    //var record: Record?
+    var audioIndexPath: IndexPath?
+    //var savePath: String?
+    
+    
+    @IBAction func edit(_ sender: UIButton) {
+        if let indexPath = self.audioIndexPath {
+            self.delegate?.popEditingAlert(indexPath: indexPath)
+        }
+    }
     
     
     override func awakeFromNib() {

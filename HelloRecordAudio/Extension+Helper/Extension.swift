@@ -21,6 +21,16 @@ extension URL {
         }
     }
     
+    func getDuration() -> Double? {
+        do {
+            let audioPlayer = try AVAudioPlayer(contentsOf: self)
+            return audioPlayer.duration
+        } catch {
+            assertionFailure("Failed creating audio player: \(error).")
+            return nil
+        }
+    }
+    
     
     func fileSize() -> Double {
         var fileSize: Double = 0.0
@@ -37,6 +47,12 @@ extension Double {
     func rounding(toDecimal decimal: Int) -> Double {
         let numberOfDigits = pow(10.0, Double(decimal))
         return (self * numberOfDigits).rounded(.toNearestOrAwayFromZero) / numberOfDigits
+    }
+    
+    func floor(toInteger integer: Int) -> Double {
+        let integer = integer - 1
+        let numberOfDigits = pow(10.0, Double(integer))
+        return (self / numberOfDigits).rounded(.towardZero) * numberOfDigits
     }
 }
 

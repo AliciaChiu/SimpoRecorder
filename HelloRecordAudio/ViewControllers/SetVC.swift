@@ -15,7 +15,8 @@ class SetVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        self.navigationController?.navigationBar.tintColor = UIColor(red: 199/255, green: 193/255, blue: 184/255, alpha: 1)
+        
     }
     
 
@@ -34,32 +35,29 @@ class SetVC: UIViewController {
 extension SetVC: UITableViewDataSource, UITableViewDelegate, MFMailComposeViewControllerDelegate {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        }else{
-            return 3
-        }
+        return 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+//        if indexPath == IndexPath(row: 0, section: 0){
+//            cell.textLabel?.text = "App Set"
+//            cell.imageView?.image = UIImage(systemName: "gearshape.fill")?.withTintColor(UIColor(red: 82/255, green: 82/255, blue: 255/255, alpha: 1), renderingMode: .alwaysOriginal)
+//        }else
         if indexPath == IndexPath(row: 0, section: 0){
-            cell.textLabel?.text = "App Set"
-            cell.imageView?.image = UIImage(systemName: "gearshape.fill")?.withTintColor(UIColor(red: 82/255, green: 82/255, blue: 255/255, alpha: 1), renderingMode: .alwaysOriginal)
-        }else if indexPath == IndexPath(row: 0, section: 1){
             cell.textLabel?.text = "Contact Us"
-            cell.imageView?.image = UIImage(systemName: "envelope.fill")?.withTintColor(UIColor(red: 82/255, green: 82/255, blue: 255/255, alpha: 1), renderingMode: .alwaysOriginal)
-        }else if indexPath == IndexPath(row: 1, section: 1){
+            cell.imageView?.image = UIImage(systemName: "envelope.fill")?.withTintColor(UIColor(red: 53/255, green: 67/255, blue: 94/255, alpha: 1), renderingMode: .alwaysOriginal)
+        }else if indexPath == IndexPath(row: 1, section: 0){
             cell.textLabel?.text = "Grade Us"
-            cell.imageView?.image = UIImage(systemName: "star.fill")?.withTintColor(UIColor(red: 82/255, green: 82/255, blue: 255/255, alpha: 1), renderingMode: .alwaysOriginal)
-        }else if indexPath == IndexPath(row: 2, section: 1){
+            cell.imageView?.image = UIImage(systemName: "star.fill")?.withTintColor(UIColor(red: 53/255, green: 67/255, blue: 94/255, alpha: 1), renderingMode: .alwaysOriginal)
+        }else if indexPath == IndexPath(row: 2, section: 0){
             cell.textLabel?.text = "App Version: 1.0"
-            cell.imageView?.image = UIImage(systemName: "house.fill")?.withTintColor(UIColor(red: 82/255, green: 82/255, blue: 255/255, alpha: 1), renderingMode: .alwaysOriginal)
+            cell.imageView?.image = UIImage(systemName: "house.fill")?.withTintColor(UIColor(red: 53/255, green: 67/255, blue: 94/255, alpha: 1), renderingMode: .alwaysOriginal)
             cell.accessoryType = .none
         }
         return cell
@@ -69,8 +67,6 @@ extension SetVC: UITableViewDataSource, UITableViewDelegate, MFMailComposeViewCo
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         if indexPath == IndexPath(row: 0, section: 0){
-            //
-        }else if indexPath == IndexPath(row: 0, section: 1){
             if (MFMailComposeViewController.canSendMail()) {
                 let alert = UIAlertController(title: "", message: "Do you have any question? Welcome to contact us😊", preferredStyle: .alert)
                 let email = UIAlertAction(title: "Email", style: .default) { (action) in
@@ -78,7 +74,7 @@ extension SetVC: UITableViewDataSource, UITableViewDelegate, MFMailComposeViewCo
                     let mailController = MFMailComposeViewController()
                     mailController.mailComposeDelegate = self
                     mailController.title = "I have some question."
-                    mailController.setSubject("SimpleRecorder- I have something to say.")
+                    mailController.setSubject("SimpleRecorder- I have some suggestion.")
                     let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
                     //let product = Bundle.main.object(forInfoDictionaryKey: "CFBundleName")
                     let messageBody = "<br/><br/><br/>Product:SimpoRecorder(V\(version!))"
@@ -96,7 +92,7 @@ extension SetVC: UITableViewDataSource, UITableViewDelegate, MFMailComposeViewCo
             } else {
                 print("Can't send the mail.")
             }
-        }else if indexPath == IndexPath(row: 1, section: 1){
+        }else if indexPath == IndexPath(row: 1, section: 0){
             let askController = UIAlertController(title: "Hello User", message: "If you like this app, please rate in App Store. Thanks.😊", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "I want to rate", style: .default) { (action) in
                 //let appID = "1560110307"

@@ -80,7 +80,6 @@ class ViewController: UIViewController {
         recordHelper.audioRecorder?.deleteRecording()
         recordHelper.isRecording = false
         recordHelper.finish = true
-        //recordHelper.settingAudioSession(toMode: .)
         self.timer?.invalidate()
         recordButton.isSelected = false
         self.currentTimeLabel.text = "00:00:00"

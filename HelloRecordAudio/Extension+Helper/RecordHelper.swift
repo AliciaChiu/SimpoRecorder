@@ -19,7 +19,6 @@ enum AudioSessionMode {
 class RecordHelper: NSObject, AVAudioRecorderDelegate{
     
     var audioRecorder:AVAudioRecorder?
-    var audioPlayer:AVAudioPlayer?
     var isAudioRecordingGranted = false     //whether is permit recording
     var isRecording = false     // whether is recording
     var finish = true           // whether record is finished
@@ -35,7 +34,9 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
     let audioSession = AVAudioSession.sharedInstance()
     let context = CoreDataHelper.shared.managedObjectContext()
     
-    func recordpermission() {
+    
+    
+    func recordPermission() {
             
         switch audioSession.recordPermission {
             case .granted:
@@ -79,6 +80,7 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
             return
         }
         
+        
         //set stored path
         let fileName = "MyAudio_\(Date().date2String(dateFormat: "yyyy-MM-dd_HH:mm:ss")).m4a"
         let url = getAudioPath(fileName: fileName)
@@ -115,7 +117,6 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
         settingAudioSession(toMode: .record)
         audioRecorder?.record()
         isRecording = true
-        
     }
     
     //stop Recording
@@ -144,9 +145,15 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
                     let record = NSEntityDescription.insertNewObject(forEntityName: "Record", into: context) as! Record
                     record.name = "\(title)"
                     record.time = "\(Date().date2String(dateFormat: "yyyy-MM-dd_HH:mm:ss"))"
-                    record.length = "\(recorder.url.audioDuration()?.rounding(toDecimal: 2) ?? 0)"
+                    if recorder.url.getDuration() ?? 0 < 60 {
+                        record.length = "\(recorder.url.getDuration()?.floor(toInteger: 1) ?? 0)秒"
+                    }else if recorder.url.getDuration() ?? 0 > 60 {
+                        let duration = recorder.url.getDuration()?.floor(toInteger: 1)
+                        record.length = "\(self.formatConversion2(time: duration ?? 0))"
+                    }
                     record.memory = "\(recorder.url.fileSize().rounding(toDecimal: 2))"
                     record.savePath = (recorder.url.absoluteString as NSString).lastPathComponent
+                    //print(record.savePath)
                     self.playList.append(record)
                     CoreDataHelper.shared.saveContext()
                 }
@@ -154,23 +161,6 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
             }
             alertController.addAction(confirmAction)
             UIApplication.topViewController()?.present(alertController, animated: true, completion: nil)
-
-            
-            
-
-//            print(record.time)
-//            print(record.length)
-//            print(record.memory)
-
-            
-//            playList.append((recorder.url.absoluteString as NSString).lastPathComponent)
-////            print((recorder.url.absoluteString as NSString).lastPathComponent)
-////            print(recorder.url.absoluteString as NSString)
-//            
-//            let userDefault = UserDefaults.standard
-//            userDefault.setValue(playList, forKey: "MyPlayList")
-//            userDefault.synchronize()
-
         }
         finish = true
     }
@@ -183,3 +173,11 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
     }
 }
 
+extension RecordHelper{
+    
+    func formatConversion2(time: Double) -> String {
+        let answer = Int(time).quotientAndRemainder(dividingBy: 60)
+        let returnStr = String(answer.quotient) + "分" + String(format: "%.02d", answer.remainder) + "秒"
+        return returnStr
+    }
+}
