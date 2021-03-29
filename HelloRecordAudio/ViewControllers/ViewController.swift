@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 import StoreKit
+import AVKit
 
 
 class ViewController: UIViewController {
@@ -21,6 +22,7 @@ class ViewController: UIViewController {
    
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var currentTimeLabel: UILabel!
+    @IBOutlet weak var recorderAnimation: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,33 +31,27 @@ class ViewController: UIViewController {
         recordButton.setImage(UIImage(named: "record"), for: UIControl.State.normal)
         
         // pause image,is recording
-        recordButton.setImage(UIImage(named: "pause"), for: UIControl.State.selected)
+        recordButton.setImage(UIImage(named: "pause_1"), for: UIControl.State.selected)
+        
+        recordButton.isSelected = false
     }
-    
-    @objc func updateCurrentTimeLabel(){
-        if ((recordHelper.audioRecorder?.isRecording) != nil) {
-            
-            var currentTime = recordHelper.audioRecorder?.currentTime ?? 0
-            currentTime = currentTime + 0.01
-            let hr = Int((currentTime / 60) / 60)
-            let min = Int(currentTime / 60)
-            let sec = Int(currentTime.truncatingRemainder(dividingBy: 60))
-            let totalTimeString = String(format: "%02d:%02d:%02d", hr, min, sec)
-            currentTimeLabel.text = totalTimeString 
-        }
-    }
-
-    
+   
     @IBAction func startOrPauseRecording(_ sender: UIButton) {
+        
         if recordHelper.isRecording == false{
             if recordHelper.finish == false {
                 recordHelper.resumeRecording()
+                recordButton.isSelected = true
             }else{
                 recordHelper.startRecording()
+                recordButton.isSelected = true
             }
             self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCurrentTimeLabel), userInfo: nil, repeats: true)
             self.timer?.fire()
-            recordButton.isSelected = true
+            setupView()
+//            let path = Bundle.main.path(forResource: "recorderAnimation", ofType: "gif")!
+//            let data = try! Data(contentsOf: URL(fileURLWithPath: path))
+            
         }else{
             recordHelper.pauseRecording()
             recordButton.isSelected = false
@@ -85,6 +81,29 @@ class ViewController: UIViewController {
         self.currentTimeLabel.text = "00:00:00"
         
     }
+    
+    @objc func updateCurrentTimeLabel(){
+        if ((recordHelper.audioRecorder?.isRecording) != nil) {
+            
+            var currentTime = recordHelper.audioRecorder?.currentTime ?? 0
+            currentTime = currentTime + 0.01
+            let hr = Int((currentTime / 60) / 60)
+            let min = Int(currentTime / 60)
+            let sec = Int(currentTime.truncatingRemainder(dividingBy: 60))
+            let totalTimeString = String(format: "%02d:%02d:%02d", hr, min, sec)
+            currentTimeLabel.text = totalTimeString
+        }
+    }
+    
+    private func setupView(){
+        //let <#name#> = <#value#>
+        
+        
+    }
+    
+    
+    
+    
     
 }
 

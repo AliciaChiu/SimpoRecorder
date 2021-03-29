@@ -39,12 +39,7 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
         
         self.queryFromCoreData()
         tableView.reloadData()
-        self.playingSlider.setThumbImage(UIImage(systemName: "circle.fill")?.withTintColor(.systemGray6, renderingMode: .alwaysOriginal), for: .normal)
-        self.volumeSlider.setThumbImage(UIImage(systemName: "circle.fill")?.withTintColor(.systemGray6, renderingMode: .automatic), for: .normal)
-        
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil, queue: .main) { (_) in
-            self.playNPauseBtn.setImage(UIImage(systemName: "play.fill")?.withTintColor(.systemGray6), for: UIControl.State.normal)
-        }
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -57,22 +52,6 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
         playNPauseBtn.setImage(UIImage(systemName: "pause.fill")?.withTintColor(.systemGray6), for: UIControl.State.selected)
         
     }
-    
-    //MARK: - CoreData
-    func queryFromCoreData() {
-        let context = CoreDataHelper.shared.managedObjectContext();
-        let request = NSFetchRequest<Record>.init(entityName: "Record")
-        
-        context.performAndWait {
-            do{
-                self.playList = try context.fetch(request)
-            }catch{
-                print("error \(error)")
-                self.playList = []
-            }
-        }
-    }
-    
     
     @IBAction func playNPauseBtnPressed(_ sender: UIButton) {
         
@@ -95,7 +74,8 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
             }else if playingSlider.value != 0 {
                 
                 let seconds = Int64(playingSlider.value)
-                let targetTime = CMTimeMake(value: seconds, timescale: 1)
+//                let interval: CMTime = CMTimeMakeWithSeconds(Double(seconds)*1000000, preferredTimescale: Int32(NSEC_PER_SEC))
+                let targetTime = CMTimeMake(value: seconds*Int64(NSEC_PER_SEC), timescale: Int32(NSEC_PER_SEC))
                 player?.seek(to: targetTime)
                 player?.play()
                 updateTime()
@@ -109,55 +89,109 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
         }
     }
     
-    
     @IBAction func playNext(_ sender: UIButton) {
+
         self.tableView.deselectRow(at: IndexPath(row: playIndex, section: 0), animated: true)
         playIndex = playIndex + 1
-        playMusic()
-        self.tableView.selectRow(at: IndexPath(row: playIndex, section: 0), animated: true, scrollPosition: .none)
-        
+        playPreviousOrNext()
+
     }
-    
-    
     
     @IBAction func playPrevious(_ sender: UIButton){
+
         self.tableView.deselectRow(at: IndexPath(row: playIndex, section: 0), animated: true)
         playIndex = playIndex - 1
-        playMusic()
-        self.tableView.selectRow(at: IndexPath(row: playIndex, section: 0), animated: true, scrollPosition: .none)
+        playPreviousOrNext()
+
     }
     
-    func playMusic(){
+    func playPreviousOrNext(){
+
         if playIndex < playList.count {
             if playIndex < 0 {
                 playIndex = playList.count - 1
             }
+            self.tableView.selectRow(at: IndexPath(row: playIndex, section: 0), animated: true, scrollPosition: .none)
             self.audioName.text = self.playList[playIndex].name
             
             let fileName = self.playList[playIndex].savePath ?? ""
             let url = getAudioPath(fileName: fileName)
-            //print(url)
-            self.player = AVPlayer()
+            //self.player = AVPlayer()
             self.playerItem = AVPlayerItem(url: url)
             self.player?.replaceCurrentItem(with: playerItem)
             self.player?.play()
+            self.playNPauseBtn.isSelected = true
 
             updateTime()
         }else{
             playIndex = 0
+            self.tableView.selectRow(at: IndexPath(row: playIndex, section: 0), animated: true, scrollPosition: .none)
             self.audioName.text = self.playList[playIndex].name
             
             let fileName = self.playList[playIndex].savePath ?? ""
             let url = getAudioPath(fileName: fileName)
             //print(url)
-            self.player = AVPlayer(url: url)
+            //self.player = AVPlayer()
             self.playerItem = AVPlayerItem(url: url)
             self.player?.replaceCurrentItem(with: playerItem)
             self.player?.play()
+            self.playNPauseBtn.isSelected = true
 
             updateTime()
         }
     }
+    
+    func restartAll(){
+        let fileName = self.playList[playIndex].savePath
+        let url = getAudioPath(fileName: fileName ?? "")
+        //self.player = AVPlayer()
+        self.playerItem = AVPlayerItem(url: url)
+        self.player?.replaceCurrentItem(with: playerItem)
+        player?.play()
+        updateTime()
+        self.playNPauseBtn.isSelected = true
+    }
+    
+    //拖曳Slider進度，要設定player播放軌道
+    @IBAction func playbackChangeSlider(_ sender: UISlider) {
+        //Slider移動的位置
+        let seconds = Int64(sender.value)
+        //計算秒數
+        let targetTime = CMTimeMake(value: seconds, timescale: 1)
+        //設定player播放進度
+        player?.seek(to: targetTime)
+        
+        //如果player暫停，則繼續播放
+        if player?.rate == 0 {
+            player?.play()
+        }
+    }
+    
+    @IBAction func volumeSlider(_ sender: UISlider) {
+        let volume = sender.value
+        player?.volume = volume
+    }
+    
+    @IBAction func closePlayPage(_ sender: UIButton) {
+        if player?.rate == 1 {
+            player?.pause()
+        }
+        self.playNPauseBtn.isSelected = false
+        self.playPage.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        if player?.rate == 1 {
+            player?.pause()
+        }
+        self.playNPauseBtn.isSelected = false
+        self.playPage.isHidden = true
+    }
+    
+}
+
+//MARK: - 畫面相關function
+extension PlayListVC{
     
     //更新播放時間＆Slider Value
     func updateTime(){
@@ -170,12 +204,14 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
             self.playingSlider.isContinuous = true
         }
         
-        
         guard let player = self.player else { return }
-        player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 1), queue: DispatchQueue.main, using: { (CMTime) in
+        
+        let interval: CMTime = CMTimeMakeWithSeconds(0.001, preferredTimescale: Int32(NSEC_PER_SEC))
+        player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main, using: { (CMTime) in
             if self.player?.currentItem?.status == .readyToPlay {
                 //已跑秒數
                 let currentTime = CMTimeGetSeconds(self.player?.currentTime() ?? CMTime)
+                print(currentTime)
                 //進度條跟著currentTime更新
                 self.playingSlider.value = Float(currentTime)
                 //currentTimeLabel跟著currentTime變換更新
@@ -196,34 +232,8 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
             }
         })
     }
-
-    //拖曳Slider進度，要設定player播放軌道
-    @IBAction func playbackChangeSlider(_ sender: UISlider) {
-        //Slider移動的位置
-        let seconds = Int64(sender.value)
-        //計算秒數
-        let targetTime = CMTimeMake(value: seconds, timescale: 1)
-        //設定player播放進度
-        player?.seek(to: targetTime)
-        
-        //如果player暫停，則繼續播放
-        if player?.rate == 0 {
-            player?.play()
-        }
-    }
     
-    
-    @IBAction func volumeSlider(_ sender: UISlider) {
-        let volume = sender.value
-        player?.volume = volume
-    }
-    
-    
-    
-    
-    
-    
-    
+    //跳出編輯頁面
     func popEditingAlert(indexPath: IndexPath) {
         
         let alertController = UIAlertController(title: nil, message: "I want to...", preferredStyle: .actionSheet)
@@ -291,21 +301,6 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
         self.present(alertController, animated: true, completion: nil)
     }
     
-    @IBAction func closePlayPage(_ sender: UIButton) {
-        if player?.rate == 1 {
-            player?.pause()
-        }
-        self.playNPauseBtn.isSelected = false
-        self.playPage.isHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        if player?.rate == 1 {
-            player?.pause()
-        }
-        self.playNPauseBtn.isSelected = false
-        self.playPage.isHidden = true
-    }
     
 }
 
@@ -352,7 +347,27 @@ extension PlayListVC: UITableViewDataSource, UITableViewDelegate{
             print(duration)
             self.reminderTimeLabel.text = "-" + formatConversion(time: duration ?? 0)
         }
+        self.restartAll()
     }
+}
+
+extension PlayListVC{
+    
+    //MARK: - CoreData
+    func queryFromCoreData() {
+        let context = CoreDataHelper.shared.managedObjectContext();
+        let request = NSFetchRequest<Record>.init(entityName: "Record")
+        
+        context.performAndWait {
+            do{
+                self.playList = try context.fetch(request)
+            }catch{
+                print("error \(error)")
+                self.playList = []
+            }
+        }
+    }
+    
 }
 
 extension PlayListVC{

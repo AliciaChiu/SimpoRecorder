@@ -19,11 +19,9 @@ class CustomTableViewCell: UITableViewCell{
     @IBOutlet weak var detailLabel: UILabel!
     
     var delegate: CustomTableViewCellDelegate?
-    
-    //var record: Record?
+
     var audioIndexPath: IndexPath?
-    //var savePath: String?
-    
+
     
     @IBAction func edit(_ sender: UIButton) {
         if let indexPath = self.audioIndexPath {

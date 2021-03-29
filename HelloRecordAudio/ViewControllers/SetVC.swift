@@ -15,21 +15,9 @@ class SetVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationController?.navigationBar.tintColor = UIColor(red: 199/255, green: 193/255, blue: 184/255, alpha: 1)
+        self.navigationController?.navigationBar.tintColor = UIColor(red: 194/255, green: 187/255, blue: 177/255, alpha: 1)
         
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension SetVC: UITableViewDataSource, UITableViewDelegate, MFMailComposeViewControllerDelegate {
@@ -51,13 +39,13 @@ extension SetVC: UITableViewDataSource, UITableViewDelegate, MFMailComposeViewCo
 //        }else
         if indexPath == IndexPath(row: 0, section: 0){
             cell.textLabel?.text = "Contact Us"
-            cell.imageView?.image = UIImage(systemName: "envelope.fill")?.withTintColor(UIColor(red: 53/255, green: 67/255, blue: 94/255, alpha: 1), renderingMode: .alwaysOriginal)
+            cell.imageView?.image = UIImage(systemName: "envelope.fill")?.withTintColor(UIColor(red: 59/255, green: 82/255, blue: 126/255, alpha: 1), renderingMode: .alwaysOriginal)
         }else if indexPath == IndexPath(row: 1, section: 0){
             cell.textLabel?.text = "Grade Us"
-            cell.imageView?.image = UIImage(systemName: "star.fill")?.withTintColor(UIColor(red: 53/255, green: 67/255, blue: 94/255, alpha: 1), renderingMode: .alwaysOriginal)
+            cell.imageView?.image = UIImage(systemName: "star.fill")?.withTintColor(UIColor(red: 59/255, green: 82/255, blue: 126/255, alpha: 1), renderingMode: .alwaysOriginal)
         }else if indexPath == IndexPath(row: 2, section: 0){
             cell.textLabel?.text = "App Version: 1.0"
-            cell.imageView?.image = UIImage(systemName: "house.fill")?.withTintColor(UIColor(red: 53/255, green: 67/255, blue: 94/255, alpha: 1), renderingMode: .alwaysOriginal)
+            cell.imageView?.image = UIImage(systemName: "house.fill")?.withTintColor(UIColor(red: 59/255, green: 82/255, blue: 126/255, alpha: 1), renderingMode: .alwaysOriginal)
             cell.accessoryType = .none
         }
         return cell
@@ -124,11 +112,4 @@ extension SetVC: UITableViewDataSource, UITableViewDelegate, MFMailComposeViewCo
         }
         self.dismiss(animated: true, completion: nil)
     }
-    
-    
-    
-    
-    
-    
-    
 }
