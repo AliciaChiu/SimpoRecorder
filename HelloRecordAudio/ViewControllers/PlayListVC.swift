@@ -31,6 +31,8 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
     @IBOutlet weak var currentTimeLabel: UILabel!
     
     @IBOutlet weak var reminderTimeLabel: UILabel!
+
+    @IBOutlet weak var audioName: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,6 +115,7 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
         playIndex = playIndex + 1
         playMusic()
         self.tableView.selectRow(at: IndexPath(row: playIndex, section: 0), animated: true, scrollPosition: .none)
+        
     }
     
     
@@ -129,6 +132,8 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
             if playIndex < 0 {
                 playIndex = playList.count - 1
             }
+            self.audioName.text = self.playList[playIndex].name
+            
             let fileName = self.playList[playIndex].savePath ?? ""
             let url = getAudioPath(fileName: fileName)
             //print(url)
@@ -140,6 +145,8 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
             updateTime()
         }else{
             playIndex = 0
+            self.audioName.text = self.playList[playIndex].name
+            
             let fileName = self.playList[playIndex].savePath ?? ""
             let url = getAudioPath(fileName: fileName)
             //print(url)
@@ -336,6 +343,7 @@ extension PlayListVC: UITableViewDataSource, UITableViewDelegate{
         self.playPage.isHidden = false
         self.playingSlider.value = 0
         self.playIndex = indexPath.row
+        self.audioName.text = self.playList[self.playIndex].name
         self.currentTimeLabel.text = "0:00"
         
         if let fileName = self.playList[indexPath.row].savePath{
