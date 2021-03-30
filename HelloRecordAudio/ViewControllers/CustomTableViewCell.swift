@@ -9,7 +9,7 @@ import UIKit
 
 
 protocol CustomTableViewCellDelegate {
-    func popEditingAlert(indexPath: IndexPath)
+    func popEditingAlert(record: Record)
 }
 
 
@@ -19,26 +19,18 @@ class CustomTableViewCell: UITableViewCell{
     @IBOutlet weak var detailLabel: UILabel!
     
     var delegate: CustomTableViewCellDelegate?
-
-    var audioIndexPath: IndexPath?
-
+    var record: Record!
     
     @IBAction func edit(_ sender: UIButton) {
-        if let indexPath = self.audioIndexPath {
-            self.delegate?.popEditingAlert(indexPath: indexPath)
-        }
+        self.delegate?.popEditingAlert(record: self.record)
     }
-    
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
     }
-
  }
 

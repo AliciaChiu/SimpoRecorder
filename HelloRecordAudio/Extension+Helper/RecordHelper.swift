@@ -33,8 +33,12 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
     
     let audioSession = AVAudioSession.sharedInstance()
     let context = CoreDataHelper.shared.managedObjectContext()
+    var passSaveRecord = false
     
-    
+    func deleteRecord() {
+        self.passSaveRecord = true
+        self.audioRecorder?.stop()
+    }
     
     func recordPermission() {
             
@@ -130,7 +134,10 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
     
     //finish Recording
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        if flag == true {
+        if self.passSaveRecord == true {
+            self.audioRecorder?.deleteRecording()
+            self.passSaveRecord = false
+        }else if flag == true {
            
             var title = ""
             
@@ -146,7 +153,7 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
                     record.name = "\(title)"
                     record.time = "\(Date().date2String(dateFormat: "yyyy-MM-dd_HH:mm:ss"))"
                     if recorder.url.getDuration() ?? 0 < 60 {
-                        record.length = "\(recorder.url.getDuration()?.floor(toInteger: 1) ?? 0)秒"
+                        record.length = "\(Int(recorder.url.getDuration()?.floor(toInteger: 1) ?? 0))秒"
                     }else if recorder.url.getDuration() ?? 0 > 60 {
                         let duration = recorder.url.getDuration()?.floor(toInteger: 1)
                         record.length = "\(self.formatConversion2(time: duration ?? 0))"
@@ -159,7 +166,12 @@ class RecordHelper: NSObject, AVAudioRecorderDelegate{
                 }
                 alertController.resignFirstResponder()
             }
+            let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { (action) in
+                alertController.resignFirstResponder()
+            }
+            
             alertController.addAction(confirmAction)
+            alertController.addAction(cancelAction)
             UIApplication.topViewController()?.present(alertController, animated: true, completion: nil)
         }
         finish = true

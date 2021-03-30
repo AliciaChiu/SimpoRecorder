@@ -62,12 +62,12 @@ extension SetVC: UITableViewDataSource, UITableViewDelegate, MFMailComposeViewCo
                     let mailController = MFMailComposeViewController()
                     mailController.mailComposeDelegate = self
                     mailController.title = "I have some question."
-                    mailController.setSubject("SimpleRecorder- I have some suggestion.")
+                    mailController.setSubject("SimpoRecorder- I have some suggestion.")
                     let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
                     //let product = Bundle.main.object(forInfoDictionaryKey: "CFBundleName")
                     let messageBody = "<br/><br/><br/>Product:SimpoRecorder(V\(version!))"
                     mailController.setMessageBody(messageBody, isHTML: true)
-                    mailController.setToRecipients(["simplerecorder110@gmail.com"])
+                    mailController.setToRecipients(["simporecorder110@gmail.com"])
                     self.present(mailController, animated: true, completion: nil)
                     
                 }

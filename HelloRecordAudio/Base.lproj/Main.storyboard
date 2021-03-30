@@ -284,7 +284,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hUu-4H-dJP">
-                                <rect key="frame" x="0.0" y="100" width="414" height="64.666666666666686"/>
+                                <rect key="frame" x="0.0" y="80" width="414" height="64.666666666666686"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="64.5" id="zSY-YZ-cWd"/>
                                 </constraints>
@@ -318,29 +318,28 @@
                                     <action selector="refresh:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1FN-Ow-qii"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f9i-Ty-auW">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="iconImage1" translatesAutoresizingMaskIntoConstraints="NO" id="rlv-Cx-dsi">
                                 <rect key="frame" x="79" y="193.66666666666663" width="256" height="256"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="256" id="jZu-Wl-LYh"/>
-                                    <constraint firstAttribute="height" constant="256" id="rGw-FM-dpz"/>
+                                    <constraint firstAttribute="height" constant="256" id="gbk-aq-tyh"/>
+                                    <constraint firstAttribute="width" constant="256" id="upY-Ac-fxR"/>
                                 </constraints>
-                            </view>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.91655713319999998" green="0.87462562320000004" blue="0.83335262539999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="hUu-4H-dJP" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="3tK-6W-rwW"/>
-                            <constraint firstItem="hUu-4H-dJP" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="100" id="5JO-EB-LEn"/>
+                            <constraint firstItem="hUu-4H-dJP" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="80" id="5JO-EB-LEn"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="VDP-zl-iEB" secondAttribute="trailing" constant="66" id="89N-xE-O4J"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="23B-9A-4mV" secondAttribute="bottom" constant="50" id="BrP-zf-ynt"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="iz6-KQ-jxS" secondAttribute="bottom" constant="40" id="CwR-9y-KAZ"/>
                             <constraint firstItem="23B-9A-4mV" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="66" id="N8D-ct-wuq"/>
                             <constraint firstItem="iz6-KQ-jxS" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ohd-9N-9hc"/>
                             <constraint firstItem="hUu-4H-dJP" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="QOa-2L-XCr"/>
+                            <constraint firstItem="rlv-Cx-dsi" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="RLO-f3-lq7"/>
+                            <constraint firstItem="rlv-Cx-dsi" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="aUB-aX-pUD"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="VDP-zl-iEB" secondAttribute="bottom" constant="50" id="b2E-S8-5Vr"/>
-                            <constraint firstItem="f9i-Ty-auW" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="jJy-cG-MeZ"/>
-                            <constraint firstItem="f9i-Ty-auW" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="kDk-Sd-HWp"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="5zM-8O-SmF">
@@ -353,9 +352,9 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="animationImageView" destination="rlv-Cx-dsi" id="f6e-Dv-gg1"/>
                         <outlet property="currentTimeLabel" destination="hUu-4H-dJP" id="ofa-cf-S6v"/>
                         <outlet property="recordButton" destination="iz6-KQ-jxS" id="CwS-rU-3BH"/>
-                        <outlet property="recorderAnimation" destination="f9i-Ty-auW" id="NtI-IS-eRL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -472,6 +471,7 @@
         <image name="backward.fill" catalog="system" width="128" height="79"/>
         <image name="ellipsis" catalog="system" width="128" height="37"/>
         <image name="forward.fill" catalog="system" width="128" height="79"/>
+        <image name="iconImage1" width="512" height="512"/>
         <image name="music" width="512" height="512"/>
         <image name="music.mic" catalog="system" width="128" height="121"/>
         <image name="music.note.list" catalog="system" width="128" height="115"/>

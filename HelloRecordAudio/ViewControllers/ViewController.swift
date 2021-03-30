@@ -22,7 +22,7 @@ class ViewController: UIViewController {
    
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var currentTimeLabel: UILabel!
-    @IBOutlet weak var recorderAnimation: UIView!
+    @IBOutlet weak var animationImageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,13 +49,12 @@ class ViewController: UIViewController {
             self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCurrentTimeLabel), userInfo: nil, repeats: true)
             self.timer?.fire()
             setupView()
-//            let path = Bundle.main.path(forResource: "recorderAnimation", ofType: "gif")!
-//            let data = try! Data(contentsOf: URL(fileURLWithPath: path))
             
         }else{
             recordHelper.pauseRecording()
             recordButton.isSelected = false
             self.timer?.invalidate()
+            setupView()
         }
     }
     
@@ -65,6 +64,7 @@ class ViewController: UIViewController {
         self.timer?.invalidate()
         recordButton.isSelected = false
         self.currentTimeLabel.text = "00:00:00"
+        setupView()
         
 //        if #available( iOS 10.3,*){
 //        SKStoreReviewController.requestReview()
@@ -72,14 +72,25 @@ class ViewController: UIViewController {
     }
     
     @IBAction func refresh(_ sender: UIButton) {
-        
-        recordHelper.audioRecorder?.deleteRecording()
+//        recordHelper.audioRecorder?.stop()
+//        if recordHelper.audioRecorder?.deleteRecording() == true{
+//            recordHelper.isRecording = false
+//            recordHelper.finish = true
+//            self.timer?.invalidate()
+//            recordButton.isSelected = false
+//            self.currentTimeLabel.text = "00:00:00"
+//            setupView()
+//        }else{
+//            print("delete xx")
+//        }
+//
+        recordHelper.deleteRecord()
         recordHelper.isRecording = false
         recordHelper.finish = true
         self.timer?.invalidate()
         recordButton.isSelected = false
         self.currentTimeLabel.text = "00:00:00"
-        
+        setupView()
     }
     
     @objc func updateCurrentTimeLabel(){
@@ -96,14 +107,21 @@ class ViewController: UIViewController {
     }
     
     private func setupView(){
-        //let <#name#> = <#value#>
+   
+        var images = [UIImage]()
+        for i in 1...19 {
+            images.append(UIImage(named: "iconImage\(i)")!)
+        }
+        animationImageView.animationImages = images
+        animationImageView.animationDuration = 0.0
+        animationImageView.animationRepeatCount = 0
+        animationImageView.image = images.last
         
-        
+        if self.recordButton.isSelected == true {
+            animationImageView.startAnimating()
+        }else if self.recordButton.isSelected == true || self.currentTimeLabel.text == "00:00:00"{
+            animationImageView.stopAnimating()
+        }
     }
-    
-    
-    
-    
-    
 }
 
