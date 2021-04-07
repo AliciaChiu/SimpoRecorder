@@ -32,6 +32,8 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
         playNPauseBtn.setImage(UIImage(systemName: "play.fill")?.withTintColor(.systemGray6), for: UIControl.State.normal)
         playNPauseBtn.setImage(UIImage(systemName: "pause.fill")?.withTintColor(.systemGray6), for: UIControl.State.selected)
         self.playingSlider.setThumbImage(UIImage(), for: .normal)
+        self.volumeSlider.setThumbImage(UIImage(systemName: "circle.fill"), for: .normal)
+        self.volumeSlider.setThumbImage(UIImage(systemName: "circle.fill"), for: .selected)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -112,6 +114,7 @@ class PlayListVC: UIViewController, AVAudioPlayerDelegate, CustomTableViewCellDe
     }
     
     @IBAction func volumeSlider(_ sender: UISlider) {
+        sender.isSelected = true
         let volume = sender.value
         player.volume = volume
     }
